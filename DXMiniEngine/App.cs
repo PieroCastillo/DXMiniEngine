@@ -39,8 +39,12 @@ namespace DXMiniEngine
             while (!glfw.WindowShouldClose(windowHandle))
             {
                 UpdateScene();
-                DrawScene();
-                Dispose();
+                GraphicsDevice.DrawFrame((x, y) =>
+                {
+                    DrawScene(x,y);
+                });
+
+                glfw.PollEvents();
             }
         }
 
@@ -60,12 +64,9 @@ namespace DXMiniEngine
 
         }
 
-        void DrawScene()
+        void DrawScene(int width, int height)
         {
-            if(GraphicsDevice.DeviceContext is not null)
-            {
-                GraphicsDevice.DeviceContext.Flush();
-            }
+            GraphicsDevice.DeviceContext.Flush();
         }
 
         public void Dispose()
