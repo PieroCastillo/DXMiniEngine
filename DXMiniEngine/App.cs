@@ -46,7 +46,9 @@ namespace DXMiniEngine
 
         void InitializeDX()
         {
-            IntPtr hwnd = new IntPtr(windowHandle);
+            var glfwWindow = new GlfwNativeWindow(glfw, windowHandle);
+
+            IntPtr hwnd = glfwWindow.Win32.Value.Hwnd;
 
             GraphicsDevice = new(hwnd, new(width, height));
         }
@@ -60,7 +62,10 @@ namespace DXMiniEngine
 
         void DrawScene()
         {
-            GraphicsDevice.DeviceContext.Flush();
+            if(GraphicsDevice is not null)
+            {
+                GraphicsDevice.DeviceContext.Flush();
+            }
         }
 
         public void Dispose()
