@@ -62,7 +62,7 @@ namespace DXMiniEngine
 
         void DrawScene()
         {
-            if(GraphicsDevice is not null)
+            if(GraphicsDevice.DeviceContext is not null)
             {
                 GraphicsDevice.DeviceContext.Flush();
             }
