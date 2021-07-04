@@ -10,6 +10,7 @@ using Vortice.DXGI;
 using Vortice.D3DCompiler;
 using static Vortice.Direct3D11.D3D11;
 using static Vortice.DXGI.DXGI;
+using Vortice.Direct3D;
 
 namespace DXMiniEngine
 {
@@ -32,6 +33,9 @@ namespace DXMiniEngine
         ID3D11Buffer VS_Buffer;
         ID3D11Buffer PS_Buffer;
         ID3D11InputLayout vertLayout;
+
+        string pxshader = @".\Shaders\PixelShader.fx";
+        string vthader = @".\Shaders\VertexShader.fx";
 
         public App()
         {
@@ -73,7 +77,8 @@ namespace DXMiniEngine
 
         void LoadObjects()
         {
-           Compiler.CompileFromFile()
+            Compiler.CompileFromFile(vthader, "main", "vt_5_0", out Blob vtBlob, out Blob vtErrorBlob);
+            Compiler.CompileFromFile(pxshader, "main", "ps_5_0", out Blob blob, out Blob error);
         }
 
         void UpdateScene()
