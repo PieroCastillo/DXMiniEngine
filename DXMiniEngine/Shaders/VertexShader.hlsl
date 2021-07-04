@@ -1,13 +1,13 @@
-﻿struct Vertex    //Overloaded Vertex Structure
+﻿struct Vertex
 {
-    Vertex() {}
-    Vertex(float x, float y, float z)
-        : pos(x, y, z) {}
-
-    XMFLOAT3 pos;
+    D3DXVECTOR3 pos;
+    D3DXCOLOR   color;
 };
 
+
+//The input-layout description
 D3D11_INPUT_ELEMENT_DESC layout[] =
 {
-    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+    {"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
 };

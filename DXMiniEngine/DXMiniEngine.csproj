@@ -11,7 +11,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Silk.NET.GLFW" Version="2.5.0" />
+    <PackageReference Include="Silk.NET.GLFW" Version="2.6.0" />
+    <PackageReference Include="Vortice.D3DCompiler" Version="1.9.87" />
     <PackageReference Include="Vortice.Direct2D1" Version="1.9.87" />
     <PackageReference Include="Vortice.Direct3D11" Version="1.9.87" />
   </ItemGroup>

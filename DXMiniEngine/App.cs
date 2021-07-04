@@ -7,8 +7,10 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
+using Vortice.D3DCompiler;
 using static Vortice.Direct3D11.D3D11;
 using static Vortice.DXGI.DXGI;
+
 namespace DXMiniEngine
 {
     public unsafe class App : IDisposable
@@ -71,7 +73,7 @@ namespace DXMiniEngine
 
         void LoadObjects()
         {
-           
+           Compiler.CompileFromFile()
         }
 
         void UpdateScene()
