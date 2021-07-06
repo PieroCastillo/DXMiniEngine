@@ -11,6 +11,8 @@ using Vortice.D3DCompiler;
 using static Vortice.Direct3D11.D3D11;
 using static Vortice.DXGI.DXGI;
 using Vortice.Direct3D;
+using System.Runtime.CompilerServices;
+using Vortice.Mathematics;
 
 namespace DXMiniEngine
 {
@@ -35,7 +37,7 @@ namespace DXMiniEngine
         ID3D11InputLayout vertLayout;
 
         string pxshader = @".\Shaders\PixelShader.fx";
-        string vthader = @".\Shaders\VertexShader.fx";
+        string vsshader = @".\Shaders\VertexShader.fx";
 
         public App()
         {
@@ -77,32 +79,74 @@ namespace DXMiniEngine
 
         void LoadObjects()
         {
-            Compiler.CompileFromFile(vthader, "main", "vt_5_0", out Blob vtBlob, out Blob vtErrorBlob);
-            Compiler.CompileFromFile(pxshader, "main", "ps_5_0", out Blob blob, out Blob error);
+            Compiler.CompileFromFile(vsshader, "main", "vs_5_0", out Blob vsBlob, out Blob vsError);
+            if (vsBlob == null)
+            {
+                throw new Exception($"Failed to compile HLSL code: {Encoding.ASCII.GetString(vsError.GetBytes())}");
+            }
+
+            Compiler.CompileFromFile(pxshader, "main", "ps_5_0", out Blob psBlob, out Blob psError);
+            if (vsBlob == null)
+            {
+                throw new Exception($"Failed to compile HLSL code: {Encoding.ASCII.GetString(psError.GetBytes())}");
+            }
+
+            GraphicsDevice.DeviceContext.VSSetShader(new ID3D11VertexShader(vsBlob.NativePointer));
+            GraphicsDevice.DeviceContext.PSSetShader(new ID3D11PixelShader(psBlob.NativePointer));
+
+            Vertex[] v =
+            {
+               new Vertex( 0.0f, 0.5f, 0.5f),
+               new Vertex( 0.5f, -0.5f, 0.5f),
+               new Vertex( -0.5f, -0.5f, 0.5f)
+            };
+
+            BufferDescription bufferDescription = new BufferDescription()
+            {
+                Usage = ResourceUsage.Default,
+                SizeInBytes = sizeof(Vertex) * 3,
+                BindFlags = BindFlags.VertexBuffer,
+                CpuAccessFlags = CpuAccessFlags.None,
+                OptionFlags = ResourceOptionFlags.None
+            };
+
+            IntPtr data;
+
+            fixed (Vertex* ptr = v)
+                data = new(ptr);
+
+            SubresourceData vertexBufferData = new(data);
+
+            var vertexBuffer = GraphicsDevice.Device.CreateBuffer(bufferDescription, vertexBufferData);
+
+            int stride = sizeof(Vertex);
+            int offset = 0;
+
+            InputElementDescription[] layout = new[]
+            {
+                new InputElementDescription("POSITION", 0, Format.R16G16B16A16_Float, 0, 0, InputClassification.PerVertexData, 0)
+            };
+
+            GraphicsDevice.DeviceContext.IASetVertexBuffers(0, 1, new ID3D11Buffer[] { vertexBuffer }, new int[] { stride }, new int[] { offset });
+            var inputLayout = GraphicsDevice.Device.CreateInputLayout(layout, vsBlob);
+
+            GraphicsDevice.DeviceContext.IASetInputLayout(inputLayout);
+            GraphicsDevice.DeviceContext.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
+
+            Viewport viewport = new(0,0, width, height);
+            GraphicsDevice.DeviceContext.RSSetViewport(viewport);
         }
 
         void UpdateScene()
         {
-            //Update the colors of our scene
-            red = red * 5;
-            green = green * 3;
-            blue = blue * 2;
 
-            if (red >= 255 || red <= 0)
-               red = 1;
-            if (green >= 255 || green <= 0)
-                green = 1;
-            if (blue >= 255 || blue <= 0)
-                blue = 1;
         }
 
         void DrawScene(int width, int height)
         {
             GraphicsDevice.DeviceContext.Flush();
 
-            var color = Color.FromArgb(red,green,blue);
-
-            GraphicsDevice.DeviceContext.ClearRenderTargetView(GraphicsDevice.RenderTargetView, color);
+            GraphicsDevice.DeviceContext.ClearRenderTargetView(GraphicsDevice.RenderTargetView, System.Drawing.Color.LightGreen);
         }
 
         public void Dispose()

@@ -17,4 +17,13 @@
     <PackageReference Include="Vortice.Direct3D11" Version="1.9.87" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Shaders\PixelShader.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Shaders\VertexShader.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
