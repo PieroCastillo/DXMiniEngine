@@ -147,6 +147,8 @@ namespace DXMiniEngine
             GraphicsDevice.DeviceContext.Flush();
 
             GraphicsDevice.DeviceContext.ClearRenderTargetView(GraphicsDevice.RenderTargetView, System.Drawing.Color.LightGreen);
+            GraphicsDevice.DeviceContext.Draw(3, 0);
+            GraphicsDevice.SwapChain.Present(0, PresentFlags.None);
         }
 
         public void Dispose()
